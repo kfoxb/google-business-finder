@@ -20,7 +20,8 @@ export function loadConfig(): Config {
     10
   );
   const businessType = process.env.BUSINESS_TYPE || undefined;
-  const keyword = process.env.KEYWORD || undefined;
+  const keywordsRaw = process.env.KEYWORDS || process.env.KEYWORD || "";
+  const keywords = keywordsRaw.split(",").map((k) => k.trim()).filter(Boolean);
 
-  return { apiKey, zipCodes, searchRadiusMeters, businessType, keyword };
+  return { apiKey, zipCodes, searchRadiusMeters, businessType, keywords };
 }

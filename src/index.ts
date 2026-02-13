@@ -10,12 +10,18 @@ import { nearbySearch, getPlaceDetails } from "./places.js";
 
 async function main() {
   const config = loadConfig();
-  const filters = [config.businessType, config.keyword].filter(Boolean).join(", ") || "all businesses";
+  const filterParts = [
+    config.businessType,
+    config.keywords.length ? config.keywords.join(", ") : null,
+  ].filter(Boolean).join(" | ") || "all businesses";
   console.log(
-    `Searching for "${filters}" near ${config.zipCodes.join(", ")} (radius: ${config.searchRadiusMeters}m)`
+    `Searching for "${filterParts}" near ${config.zipCodes.join(", ")} (radius: ${config.searchRadiusMeters}m)`
   );
 
   initDb();
+
+  // If no keywords, run one search per zip with no keyword
+  const searchKeywords = config.keywords.length ? config.keywords : [undefined];
 
   for (const zipCode of config.zipCodes) {
     console.log(`\n--- Zip code: ${zipCode} ---`);
@@ -25,31 +31,31 @@ async function main() {
     const location = await geocodeZip(config.apiKey, zipCode);
     console.log(`Location: ${location.lat}, ${location.lng}`);
 
-    // Nearby search
-    console.log("Running nearby search...");
-    const results = await nearbySearch(
-      config.apiKey,
-      location,
-      config.searchRadiusMeters,
-      config.businessType,
-      config.keyword
-    );
-    console.log(`Found ${results.length} businesses`);
+    for (const keyword of searchKeywords) {
+      console.log(`Searching${keyword ? ` for "${keyword}"` : ""}...`);
+      const results = await nearbySearch(
+        config.apiKey,
+        location,
+        config.searchRadiusMeters,
+        config.businessType,
+        keyword
+      );
+      console.log(`Found ${results.length} businesses`);
 
-    // Upsert into database
-    for (const result of results) {
-      upsertBusiness({
-        place_id: result.place_id,
-        name: result.name,
-        formatted_address: result.formatted_address,
-        lat: result.lat,
-        lng: result.lng,
-        types: JSON.stringify(result.types),
-        business_status: result.business_status || null,
-        rating: result.rating ?? null,
-        user_ratings_total: result.user_ratings_total ?? null,
-        zip_code: zipCode,
-      });
+      for (const result of results) {
+        upsertBusiness({
+          place_id: result.place_id,
+          name: result.name,
+          formatted_address: result.formatted_address,
+          lat: result.lat,
+          lng: result.lng,
+          types: JSON.stringify(result.types),
+          business_status: result.business_status || null,
+          rating: result.rating ?? null,
+          user_ratings_total: result.user_ratings_total ?? null,
+          zip_code: zipCode,
+        });
+      }
     }
   }
 
