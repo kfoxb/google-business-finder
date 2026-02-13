@@ -1,10 +1,8 @@
-import { loadConfig } from "./config.js";
 import { initDb, getBusinessesWithoutWebsite } from "./db.js";
 
-const config = loadConfig();
 initDb();
 
-const noWebsite = getBusinessesWithoutWebsite(config.zipCode);
+const noWebsite = getBusinessesWithoutWebsite();
 
 console.log("name,address,phone,rating,reviews");
 for (const biz of noWebsite) {

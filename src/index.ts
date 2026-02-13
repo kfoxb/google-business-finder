@@ -50,7 +50,7 @@ async function main() {
   }
 
   // Fetch details for businesses not yet enriched
-  const unfetched = getUnfetchedBusinesses(config.zipCode);
+  const unfetched = getUnfetchedBusinesses();
   console.log(`Fetching details for ${unfetched.length} businesses...`);
 
   for (let i = 0; i < unfetched.length; i++) {

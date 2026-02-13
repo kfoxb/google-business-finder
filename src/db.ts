@@ -57,17 +57,16 @@ export function upsertBusiness(business: {
       business_status = excluded.business_status,
       rating = excluded.rating,
       user_ratings_total = excluded.user_ratings_total,
-      zip_code = excluded.zip_code,
       updated_at = datetime('now')
   `);
   stmt.run(business);
 }
 
-export function getUnfetchedBusinesses(zipCode: string): Business[] {
+export function getUnfetchedBusinesses(): Business[] {
   const stmt = db.prepare(
-    `SELECT * FROM businesses WHERE zip_code = ? AND details_fetched = 0`
+    `SELECT * FROM businesses WHERE details_fetched = 0`
   );
-  return stmt.all(zipCode) as Business[];
+  return stmt.all() as Business[];
 }
 
 export function updateBusinessDetails(
@@ -83,9 +82,9 @@ export function updateBusinessDetails(
   stmt.run(phone, website, placeId);
 }
 
-export function getBusinessesWithoutWebsite(zipCode: string): Business[] {
+export function getBusinessesWithoutWebsite(): Business[] {
   const stmt = db.prepare(
-    `SELECT * FROM businesses WHERE zip_code = ? AND details_fetched = 1 AND website IS NULL`
+    `SELECT * FROM businesses WHERE details_fetched = 1 AND website IS NULL`
   );
-  return stmt.all(zipCode) as Business[];
+  return stmt.all() as Business[];
 }
