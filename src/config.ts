@@ -18,7 +18,7 @@ export function loadConfig(): Config {
     process.env.SEARCH_RADIUS_METERS || "5000",
     10
   );
-  const businessType = process.env.BUSINESS_TYPE || "restaurant";
+  const businessType = process.env.BUSINESS_TYPE || undefined;
 
   return { apiKey, zipCode, searchRadiusMeters, businessType };
 }

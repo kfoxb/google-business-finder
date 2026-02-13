@@ -11,8 +11,9 @@ import { nearbySearch, getPlaceDetails } from "./places.js";
 
 async function main() {
   const config = loadConfig();
+  const typeLabel = config.businessType ?? "all businesses";
   console.log(
-    `Searching for "${config.businessType}" near ${config.zipCode} (radius: ${config.searchRadiusMeters}m)`
+    `Searching for "${typeLabel}" near ${config.zipCode} (radius: ${config.searchRadiusMeters}m)`
   );
 
   initDb();

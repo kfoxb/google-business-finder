@@ -2,7 +2,7 @@ export interface Config {
   apiKey: string;
   zipCode: string;
   searchRadiusMeters: number;
-  businessType: string;
+  businessType?: string;
 }
 
 export interface LatLng {
