@@ -1,6 +1,6 @@
 export interface Config {
   apiKey: string;
-  zipCode: string;
+  zipCodes: string[];
   searchRadiusMeters: number;
   businessType?: string;
   keyword?: string;

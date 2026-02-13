@@ -12,46 +12,50 @@ async function main() {
   const config = loadConfig();
   const filters = [config.businessType, config.keyword].filter(Boolean).join(", ") || "all businesses";
   console.log(
-    `Searching for "${filters}" near ${config.zipCode} (radius: ${config.searchRadiusMeters}m)`
+    `Searching for "${filters}" near ${config.zipCodes.join(", ")} (radius: ${config.searchRadiusMeters}m)`
   );
 
   initDb();
 
-  // Geocode zip code
-  console.log(`Geocoding zip code ${config.zipCode}...`);
-  const location = await geocodeZip(config.apiKey, config.zipCode);
-  console.log(`Location: ${location.lat}, ${location.lng}`);
+  for (const zipCode of config.zipCodes) {
+    console.log(`\n--- Zip code: ${zipCode} ---`);
 
-  // Nearby search
-  console.log("Running nearby search...");
-  const results = await nearbySearch(
-    config.apiKey,
-    location,
-    config.searchRadiusMeters,
-    config.businessType,
-    config.keyword
-  );
-  console.log(`Found ${results.length} businesses`);
+    // Geocode zip code
+    console.log(`Geocoding ${zipCode}...`);
+    const location = await geocodeZip(config.apiKey, zipCode);
+    console.log(`Location: ${location.lat}, ${location.lng}`);
 
-  // Upsert into database
-  for (const result of results) {
-    upsertBusiness({
-      place_id: result.place_id,
-      name: result.name,
-      formatted_address: result.formatted_address,
-      lat: result.lat,
-      lng: result.lng,
-      types: JSON.stringify(result.types),
-      business_status: result.business_status || null,
-      rating: result.rating ?? null,
-      user_ratings_total: result.user_ratings_total ?? null,
-      zip_code: config.zipCode,
-    });
+    // Nearby search
+    console.log("Running nearby search...");
+    const results = await nearbySearch(
+      config.apiKey,
+      location,
+      config.searchRadiusMeters,
+      config.businessType,
+      config.keyword
+    );
+    console.log(`Found ${results.length} businesses`);
+
+    // Upsert into database
+    for (const result of results) {
+      upsertBusiness({
+        place_id: result.place_id,
+        name: result.name,
+        formatted_address: result.formatted_address,
+        lat: result.lat,
+        lng: result.lng,
+        types: JSON.stringify(result.types),
+        business_status: result.business_status || null,
+        rating: result.rating ?? null,
+        user_ratings_total: result.user_ratings_total ?? null,
+        zip_code: zipCode,
+      });
+    }
   }
 
   // Fetch details for businesses not yet enriched
   const unfetched = getUnfetchedBusinesses();
-  console.log(`Fetching details for ${unfetched.length} businesses...`);
+  console.log(`\nFetching details for ${unfetched.length} businesses...`);
 
   for (let i = 0; i < unfetched.length; i++) {
     const biz = unfetched[i];

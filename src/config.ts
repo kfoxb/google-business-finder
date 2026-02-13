@@ -9,10 +9,11 @@ export function loadConfig(): Config {
     throw new Error("GOOGLE_MAPS_API_KEY is required in .env");
   }
 
-  const zipCode = process.env.ZIP_CODE;
-  if (!zipCode) {
-    throw new Error("ZIP_CODE is required in .env");
+  const zipCodesRaw = process.env.ZIP_CODES || process.env.ZIP_CODE;
+  if (!zipCodesRaw) {
+    throw new Error("ZIP_CODES (or ZIP_CODE) is required in .env");
   }
+  const zipCodes = zipCodesRaw.split(",").map((z) => z.trim()).filter(Boolean);
 
   const searchRadiusMeters = parseInt(
     process.env.SEARCH_RADIUS_METERS || "5000",
@@ -21,5 +22,5 @@ export function loadConfig(): Config {
   const businessType = process.env.BUSINESS_TYPE || undefined;
   const keyword = process.env.KEYWORD || undefined;
 
-  return { apiKey, zipCode, searchRadiusMeters, businessType, keyword };
+  return { apiKey, zipCodes, searchRadiusMeters, businessType, keyword };
 }
