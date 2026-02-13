@@ -19,6 +19,7 @@ export function initDb(): Database.Database {
       lng REAL,
       phone TEXT,
       website TEXT,
+      google_maps_url TEXT,
       types TEXT,
       business_status TEXT,
       rating REAL,
@@ -29,6 +30,12 @@ export function initDb(): Database.Database {
       updated_at TEXT DEFAULT (datetime('now'))
     )
   `);
+
+  // Migrate existing databases
+  const columns = db.prepare("PRAGMA table_info(businesses)").all() as { name: string }[];
+  if (!columns.some((c) => c.name === "google_maps_url")) {
+    db.exec("ALTER TABLE businesses ADD COLUMN google_maps_url TEXT");
+  }
 
   return db;
 }
@@ -72,14 +79,15 @@ export function getUnfetchedBusinesses(): Business[] {
 export function updateBusinessDetails(
   placeId: string,
   phone: string | null,
-  website: string | null
+  website: string | null,
+  googleMapsUrl: string | null
 ): void {
   const stmt = db.prepare(`
     UPDATE businesses
-    SET phone = ?, website = ?, details_fetched = 1, updated_at = datetime('now')
+    SET phone = ?, website = ?, google_maps_url = ?, details_fetched = 1, updated_at = datetime('now')
     WHERE place_id = ?
   `);
-  stmt.run(phone, website, placeId);
+  stmt.run(phone, website, googleMapsUrl, placeId);
 }
 
 export function getBusinessesWithoutWebsite(): Business[] {

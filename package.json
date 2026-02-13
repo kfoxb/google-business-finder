@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
-    "csv": "tsx src/csv.ts"
+    "csv": "tsx src/csv.ts",
+    "backfill-urls": "tsx src/backfill-urls.ts"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.0",

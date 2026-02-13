@@ -19,6 +19,7 @@ export interface Business {
   lng: number;
   phone: string | null;
   website: string | null;
+  google_maps_url: string | null;
   types: string; // JSON array as text
   business_status: string | null;
   rating: number | null;
