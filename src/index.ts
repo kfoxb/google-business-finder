@@ -4,7 +4,6 @@ import {
   upsertBusiness,
   getUnfetchedBusinesses,
   updateBusinessDetails,
-  getBusinessesWithoutWebsite,
 } from "./db.js";
 import { geocodeZip } from "./geocode.js";
 import { nearbySearch, getPlaceDetails } from "./places.js";
@@ -66,19 +65,7 @@ async function main() {
     }
   }
 
-  // Report businesses without websites
-  const noWebsite = getBusinessesWithoutWebsite(config.zipCode);
-  console.log(
-    `\n=== Businesses without a website (${noWebsite.length}) ===\n`
-  );
-
-  for (const biz of noWebsite) {
-    console.log(`Name:    ${biz.name}`);
-    console.log(`Address: ${biz.formatted_address}`);
-    console.log(`Phone:   ${biz.phone || "N/A"}`);
-    console.log(`Rating:  ${biz.rating ?? "N/A"} (${biz.user_ratings_total ?? 0} reviews)`);
-    console.log("");
-  }
+  console.log("\nDone. Run `npm run csv` to export businesses without websites.")
 }
 
 main().catch((err) => {

@@ -1,7 +1,4 @@
-import {
-  Client,
-  PlaceInputType,
-} from "@googlemaps/google-maps-services-js";
+import { Client } from "@googlemaps/google-maps-services-js";
 import { LatLng } from "./types.js";
 
 const client = new Client({});

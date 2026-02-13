@@ -4,7 +4,8 @@
   "description": "CLI tool to find local businesses near a zip code that lack a website",
   "type": "module",
   "scripts": {
-    "start": "tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "csv": "tsx src/csv.ts"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.0",
