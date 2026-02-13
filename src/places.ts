@@ -19,7 +19,8 @@ export async function nearbySearch(
   apiKey: string,
   location: LatLng,
   radius: number,
-  type?: string
+  type?: string,
+  keyword?: string
 ): Promise<NearbyResult[]> {
   const allResults: NearbyResult[] = [];
   let pageToken: string | undefined;
@@ -30,6 +31,7 @@ export async function nearbySearch(
         location,
         radius,
         ...(type ? { type } : {}),
+        ...(keyword ? { keyword } : {}),
         pagetoken: pageToken,
         key: apiKey,
       },

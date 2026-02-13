@@ -10,9 +10,9 @@ import { nearbySearch, getPlaceDetails } from "./places.js";
 
 async function main() {
   const config = loadConfig();
-  const typeLabel = config.businessType ?? "all businesses";
+  const filters = [config.businessType, config.keyword].filter(Boolean).join(", ") || "all businesses";
   console.log(
-    `Searching for "${typeLabel}" near ${config.zipCode} (radius: ${config.searchRadiusMeters}m)`
+    `Searching for "${filters}" near ${config.zipCode} (radius: ${config.searchRadiusMeters}m)`
   );
 
   initDb();
@@ -28,7 +28,8 @@ async function main() {
     config.apiKey,
     location,
     config.searchRadiusMeters,
-    config.businessType
+    config.businessType,
+    config.keyword
   );
   console.log(`Found ${results.length} businesses`);
 
