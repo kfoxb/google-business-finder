@@ -67,11 +67,16 @@ export async function nearbySearch(
 export async function getPlaceDetails(
   apiKey: string,
   placeId: string
-): Promise<{ phone: string | null; website: string | null; google_maps_url: string | null }> {
+): Promise<{
+  phone: string | null;
+  website: string | null;
+  google_maps_url: string | null;
+  formatted_address: string | null;
+}> {
   const response = await client.placeDetails({
     params: {
       place_id: placeId,
-      fields: ["formatted_phone_number", "website", "url"],
+      fields: ["formatted_phone_number", "website", "url", "formatted_address"],
       key: apiKey,
     },
   });
@@ -81,5 +86,6 @@ export async function getPlaceDetails(
     phone: result?.formatted_phone_number || null,
     website: result?.website || null,
     google_maps_url: result?.url || null,
+    formatted_address: result?.formatted_address || null,
   };
 }

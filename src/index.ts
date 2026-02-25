@@ -70,7 +70,13 @@ async function main() {
     );
     try {
       const details = await getPlaceDetails(config.apiKey, biz.place_id);
-      updateBusinessDetails(biz.place_id, details.phone, details.website, details.google_maps_url);
+      updateBusinessDetails(
+        biz.place_id,
+        details.phone,
+        details.website,
+        details.google_maps_url,
+        details.formatted_address
+      );
     } catch (err) {
       console.error(`    Error fetching details for ${biz.name}:`, err);
     }

@@ -80,14 +80,15 @@ export function updateBusinessDetails(
   placeId: string,
   phone: string | null,
   website: string | null,
-  googleMapsUrl: string | null
+  googleMapsUrl: string | null,
+  formattedAddress: string | null
 ): void {
   const stmt = db.prepare(`
     UPDATE businesses
-    SET phone = ?, website = ?, google_maps_url = ?, details_fetched = 1, updated_at = datetime('now')
+    SET phone = ?, website = ?, google_maps_url = ?, formatted_address = ?, details_fetched = 1, updated_at = datetime('now')
     WHERE place_id = ?
   `);
-  stmt.run(phone, website, googleMapsUrl, placeId);
+  stmt.run(phone, website, googleMapsUrl, formattedAddress, placeId);
 }
 
 export function getBusinessesWithoutWebsite(): Business[] {
