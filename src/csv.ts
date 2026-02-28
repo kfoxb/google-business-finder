@@ -6,9 +6,10 @@ const noWebsite = getBusinessesWithoutWebsite();
 
 console.log("name,address,phone,rating,reviews,google_maps_url");
 for (const biz of noWebsite) {
+  const address = biz.formatted_address?.replace(/, USA$/, "") || "";
   const fields = [
     biz.name,
-    biz.formatted_address,
+    address,
     biz.phone || "",
     biz.rating?.toString() ?? "",
     biz.user_ratings_total?.toString() ?? "",
